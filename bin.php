@@ -34,4 +34,9 @@ class Bin {
 
 		return call_user_func_array('pack', $array);
 	}
+
+	// Unpack an array but 0 index it
+	public static function zero_unpack($format, $data) {
+		return array_values(unpack($format, $data));
+	}
 }

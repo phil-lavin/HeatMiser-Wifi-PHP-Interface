@@ -59,13 +59,15 @@ class Heatmiser_Wifi {
 	}
 
 	// Low level command input
-	// data should come as an array of 16 bit words
-	protected function command($op, array $data) {
+	// data should come as an array of octets or a string
+	protected function command($op, $data) {
+		!is_array($data) and $data = \Bin::zero_unpack('C*', $response);
+
 		$len = 7 + count($data);
 		$cmd = array_merge([$op], Bin::w2b($len), Bin::w2b($this->pin), $data);
 		$cmd = array_merge($cmd, Bin::w2b($this->crc16($cmd)));
 
-		$bin = Bin::array_pack('c*', $cmd);
+		$bin = Bin::array_pack('C*', $cmd);
 
 		if (fputs($this->sock, $bin) === false) {
 			throw new SendFailedException("Failed to write command to thermostat");
@@ -79,7 +81,7 @@ class Heatmiser_Wifi {
 		}
 
 		// Split the response into octets
-		$response = array_map('ord', str_split($response));
+		$response = \Bin::zero_unpack('C*', $response);
 
 		// Extract interesting fields
 		$op = $response[0];
@@ -104,7 +106,7 @@ class Heatmiser_Wifi {
 	}
 
 	protected function read_dcb() {
-		$this->command(0x93, array_merge(\Bin::w2b(0x0000), \Bin::w2b(0xffff)));
+		$this->command(0x93, [0x00, 0x00, 0xff, 0xff]);
 		$response = $this->response();
 		$data = $response['data'];
 
@@ -140,7 +142,7 @@ class Heatmiser_Wifi {
 		// Get it
 		$dcb = $this->read_dcb();
 
-		var_dump($dcb[43]);
+		var_dump($dcb[40]);
 	}
 
 	// Generate the CRC
