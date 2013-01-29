@@ -29,6 +29,9 @@ try {
 catch (ConnectionFailedException $e) {
         die("Failed to connect: ".$e->getMessage()."\n");
 }
+catch (\Exception $e) {
+        die("Exception of type ".get_class($e)." thrown. Error was: {$e->getMessage()}\n");
+}
 ```
 
 
