@@ -18,7 +18,7 @@ class Bin {
 	}
 
 	// Convert octets in little endian format to a 16-bit word
-	// lsb can be the lsb of an array of [lsb,msb]
+	// lsb can be the lsb or an array of [lsb,msb]
 	public static function b2w($lsb, $msb = null) {
 		if (is_array($lsb)) {
 			$msb = $lsb[1];
