@@ -1,5 +1,16 @@
 <?php
 
+/**
+* PHP interface to Heatmiser wifi thermostats - OO representation of a DCB
+* by Phil Lavin <phil@lavin.me.uk>.
+*
+* Released under the BSD license.
+*
+* References from and thanks to:
+*     http://code.google.com/p/heatmiser-wifi/
+*     http://www.heatmiser.com/web/index.php/support/manuals-and-documents/finish/27-network-protocol/25-v3-9-protocol-document
+*/
+
 class DCB implements \ArrayAccess {
 	protected $raw;
 	protected $data = array();

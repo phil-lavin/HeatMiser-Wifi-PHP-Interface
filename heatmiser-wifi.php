@@ -1,7 +1,7 @@
 <?php
 
 /**
-* PHP interface to Heatmiser wifi thermostats
+* PHP interface to Heatmiser wifi thermostats - Main interface class
 * by Phil Lavin <phil@lavin.me.uk>.
 *
 * Released under the BSD license.
