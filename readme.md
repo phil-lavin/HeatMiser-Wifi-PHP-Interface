@@ -25,7 +25,7 @@ Usage example
 require_once 'heatmiser-wifi.php';
 
 try {
-	// ip, pin, optional port
+        // ip, pin, optional port
         $hm = new Heatmiser_Wifi('192.168.1.123', 1234);
         var_dump($hm->get_dcb());
 }
