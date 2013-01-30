@@ -14,6 +14,7 @@
 class DCB implements \ArrayAccess {
 	protected $raw;
 	protected $data = array();
+	protected $new_data = array();
 
 	public function __construct($raw) {
 		$this->raw = $raw;
@@ -21,6 +22,12 @@ class DCB implements \ArrayAccess {
 		$this->parse();
 	}
 
+	// Wipes new_data such that we can diff from the beginning
+	public function commit() {
+		$this->new_data = array();
+	}
+
+	// Parses the raw DCB
 	protected function parse() {
 		$lookup = function($key, $vals) {
 			if (array_key_exists($key, $vals))
@@ -162,6 +169,9 @@ class DCB implements \ArrayAccess {
 				$this->set_water_data($water_data);
 			}
 
+			// Commit to wipe the new data record
+			$this->commit();
+
 			if ($prog)
 				\Error::write("DCB is longer than expected. There's ".count($prog)." octets left");
 		}
@@ -193,6 +203,7 @@ class DCB implements \ArrayAccess {
 		if (substr($name, 0, 4) == 'set_') {
 			$attr = substr($name, 4);
 			$this[$attr] = $args[0];
+			$this->new_data[$attr] = $args[0];
 
 			return $args[0];
 		}
