@@ -105,13 +105,12 @@ class Heatmiser_Wifi {
 		return ['op'=>$op, 'data'=>$data];
 	}
 
-	protected function read_dcb() {
-		$this->command(0x93, [0x00, 0x00, 0xff, 0xff]);
-		$response = $this->response();
-		$data = $response['data'];
+	// Validate raw DCBs
+	protected function dcb_valid($raw) {
+		$data = $raw['data'];
 
 		// Check op code
-		if ($response['op'] != 0x94) {
+		if ($raw['op'] != 0x94) {
 			throw new InvalidDCBResponseException("Opcode incorrect in response");
 		}
 
@@ -135,9 +134,45 @@ class Heatmiser_Wifi {
 			throw new InvalidDCBResponseException("Response length 2 is not correct");
 		}
 
+		return true;
+	}
+
+
+	// Read dcb at the low level
+	protected function read_dcb() {
+		// Send
+		$this->command(0x93, [0x00, 0x00, 0xff, 0xff]);
+
+		// Get
+		$response = $this->response();
+		$data = $response['data'];
+
+		// Validate. Might throw an exception
+		$this->dcb_valid($response);
+
+		// Return DCB
 		return array_slice($data, 4);
 	}
 
+	// Write an item to the dcb
+	// Only supports writing 1 item - largely because there's some stuff you can't write together, so the docs say
+	public function write_dcb($item, array $data) {
+		// Send - 1 is the number of items
+		$data = array_merge([1], \Bin::w2b($item), [count($data)], $data);
+		$this->command(0xa3, $data);
+
+		// Get
+		$response = $this->response();
+		$r_data = $response['data'];
+
+		// Validate. Might throw an exception
+		$this->dcb_valid($response);
+
+		// Return the DCB
+		return array_slice($r_data, 4);
+	}
+
+	// Get the DCB in the form of an object
 	public function get_dcb() {
 		// Get it
 		$raw = $this->read_dcb();
