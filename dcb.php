@@ -223,7 +223,7 @@ class DCB implements \ArrayAccess {
 				case 'hotwater_on':
 					// Hotwater models
 					if (preg_match('/(HW|TM1)$/', $this['model']))
-						$out[42] = [(int)($value ? 2 : 1)];
+						$out[42] = [($value ? 2 : 1)];
 					break;
 				default:
 					$failed[] = $key;
