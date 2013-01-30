@@ -177,6 +177,61 @@ class DCB implements \ArrayAccess {
 		}
 	}
 
+	// Returns the changes since the last commit() as a [key=>[value]] set for use in raw writing
+	public function get_changes() {
+		$out = array();
+		$failed = array();
+
+		foreach ($this->new_data as $key=>$value) {
+			switch ($key) {
+				case 'time':
+					$out[43] = $this->from_sql_datetime($value);
+					break;
+				case 'enabled':
+					$out[21] = [(int)$value];
+					break;
+				case 'keylock':
+					$out[22] = [(int)$value];
+					break;
+				case 'holiday_enabled':
+					if ( ! $value) // So it seems setting holiday is implicit of enabling it
+						$out[24] = [(int)$value];
+					break;
+				case 'holiday':
+					$out[24] = $this->from_sql_datetime($value, false);
+					break;
+				case 'runmode':
+					if ($this['model'] != 'TM1')
+						$out[23] = [(int)$value];
+					break;
+				case 'frostprotect_target':
+					if ($this['model'] != 'TM1')
+						$out[17] = [(int)$value];
+					break;
+				case 'floorlimit_floormax':
+					if (substr($model, -2) == '-E')
+						$out[19] = [(int)$value];
+					break;
+				case 'heating_target':
+					if ($this['model'] != 'TM1')
+						$out[18] = [(int)$value];
+					break;
+				case 'heating_hold':
+					if ($this['model'] != 'TM1')
+						$out[32] = [(int)$value];
+					break;
+				case 'hotwater_on':
+					// Hotwater models
+					if (preg_match('/(HW|TM1)$/', $this['model']))
+						$out[42] = [(int)($value ? 2 : 1)];
+					break;
+				default:
+					$failed[] = $key;
+					break;
+			}
+		}
+	}
+
 	protected function sql_datetime($data) {
 		list($year, $month, $day, $wday, $hour, $minute, $second) = $data;
 
@@ -186,14 +241,39 @@ class DCB implements \ArrayAccess {
 		);
 	}
 
+	// Will convert anything strtotime can do
+	protected function from_sql_datetime($data, $dow = true) {
+		if ( ($ts = strtotime($data)) === false) {
+			throw new InvalidDataException("Date format provided is not valid");
+		}
+
+		$out = explode(' ', date('y n j'.($dow?' w':'').' G i s', $ts));
+		return array_map('intval', $out);
+	}
+
 	protected function sql_time($data) {
 		list($hour, $minute, $second) = $data;
 
 		return sprintf('%02d:%02d:%02d', $hour, $minute, $second);
 	}
 
+	// Will also convert anything strtotime can do
+	protected function from_sql_time($data, $secs = true) {
+		if ( ($ts = strtotime($data)) === false) {
+			throw new InvalidDataException("Date format provided is not valid");
+		}
+
+		$out = explode(' ', date('G i'.($secs?' s':''), $ts));
+		return array_map('intval', $out);
+	}
+
 	public function get_raw() {
 		return $this->raw;
+	}
+
+	protected function set_attr($name, $val) {
+		$this[$attr] = $val;
+		$this->new_data[$attr] = $val;
 	}
 
 	// Somewhat magic-from-a-distance
@@ -202,13 +282,18 @@ class DCB implements \ArrayAccess {
 	public function __call($name, $args) {
 		if (substr($name, 0, 4) == 'set_') {
 			$attr = substr($name, 4);
-			$this[$attr] = $args[0];
-			$this->new_data[$attr] = $args[0];
+			$this->set_attr($name, $args[0]);
 
 			return $args[0];
 		}
 
 		throw new InvalidMethodException("Invalid method '{$name}' called");
+	}
+
+	// set_*() overrides
+	public function set_holiday($val) {
+		$this->set_attr('holiday', $val);
+		$this->set_attr('holiday_enabled', 1);
 	}
 
 	// ArrayAccess
@@ -236,3 +321,4 @@ class DCB implements \ArrayAccess {
 
 class InvalidMethodException extends \Exception {}
 class LookupFailedException extends \Exception {}
+class InvalidDataException extends \Exception {}
