@@ -140,9 +140,10 @@ class Heatmiser_Wifi {
 
 	public function get_dcb() {
 		// Get it
-		$dcb = $this->read_dcb();
+		$raw = $this->read_dcb();
 
-		var_dump($dcb[40]);
+		// Make DCB obj
+		return new DCB($raw);
 	}
 
 	// Generate the CRC

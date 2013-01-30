@@ -4,7 +4,9 @@ HeatMiser WiFi PHP Interface
 Current State
 -------------
 
-Development started on 2013-01-29. Reads raw DCB but does not parse it yet.
+Development started on 2013-01-29. Reads raw DCB and parses it.
+
+Next to do is to allow writing.
 
 
 Intro
