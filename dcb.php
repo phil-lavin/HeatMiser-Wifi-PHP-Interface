@@ -282,8 +282,8 @@ class DCB implements \ArrayAccess {
 	}
 
 	protected function set_attr($name, $val) {
-		$this[$attr] = $val;
-		$this->new_data[$attr] = $val;
+		$this[$name] = $val;
+		$this->new_data[$name] = $val;
 	}
 
 	// Somewhat magic-from-a-distance
@@ -292,7 +292,7 @@ class DCB implements \ArrayAccess {
 	public function __call($name, $args) {
 		if (substr($name, 0, 4) == 'set_') {
 			$attr = substr($name, 4);
-			$this->set_attr($name, $args[0]);
+			$this->set_attr($attr, $args[0]);
 
 			return $args[0];
 		}
