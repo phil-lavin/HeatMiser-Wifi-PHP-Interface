@@ -157,7 +157,7 @@ class Heatmiser_Wifi {
 	// Write an item to the dcb
 	// Only supports writing 1 item - largely because there's some stuff you can't write together, so the docs say
 	public function write_dcb($item, array $data) {
-		// Send - 1 is the number of items
+		// Send. 1 is the number of items
 		$data = array_merge([1], \Bin::w2b($item), [count($data)], $data);
 		$this->command(0xa3, $data);
 
@@ -170,6 +170,15 @@ class Heatmiser_Wifi {
 
 		// Return the DCB
 		return array_slice($r_data, 4);
+	}
+
+	// Write the DCB from an object
+	public function put_dcb(DCB $dcb) {
+		foreach ($dcb->get_changes() as $key=>$value) {
+			$raw = $this->write_dcb($key, $value);
+		}
+
+		return new DCB($raw);
 	}
 
 	// Get the DCB in the form of an object

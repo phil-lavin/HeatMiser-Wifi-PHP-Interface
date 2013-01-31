@@ -1,18 +1,10 @@
 HeatMiser WiFi PHP Interface
 ============================
 
-Current State
--------------
-
-Development started on 2013-01-29. Reads raw DCB and parses it.
-
-Next to do is to allow writing.
-
-
 Intro
 -----
 
-PHP class to interface with HeatMiser wifi thermostats via their binary interface. Allows reading/writing of DCB.
+PHP library to interface with HeatMiser wifi thermostats via their binary interface. Allows reading/writing of DCB.
 
 
 
@@ -27,13 +19,167 @@ require_once 'heatmiser-wifi.php';
 try {
         // ip, pin, optional port
         $hm = new Heatmiser_Wifi('192.168.1.123', 1234);
-        var_dump($hm->get_dcb());
+        $dcb = $hm->get_dcb();
+
+	var_dump($dcb); // Dump existing DCB
+
+	// Change heat programming for the weekend. 3rd period (return), starts at 16:00, target temp 25C
+	$heat_data = $dcb['heat_data'];
+	$heat_data['6-7'][2] = ['time'=>'16:00:00', 'target'=>25];
+	$dcb->set_heat_data($heat_data); // Could be set_ followed by any of the below writable values - e.g. set_enabled(1)
+
+	// Write and dump new DCB
+	var_dump($hm->put_dcb($dcb));
 }
 catch (ConnectionFailedException $e) {
         die("Failed to connect: ".$e->getMessage()."\n");
 }
 catch (\Exception $e) {
         die("Exception of type ".get_class($e)." thrown. Error was: {$e->getMessage()}\n");
+}
+```
+
+
+Writable Values
+---------------
+
+Only the following values can be changed. This is a restriction of the device:
+
+* time
+* enabled
+* keylock
+* holiday_enabled
+* holiday
+* runmode
+* frostprotect_target
+* floorlimit_floormax
+* heating_target
+* heating_hold
+* hotwater_on
+* heat_data
+* water_data
+
+
+Example DCB object data array format (for reading and writing)
+------------------
+
+```php
+<?php
+array(28) {
+  'vendor' =>
+  string(9) "Heatmiser"
+  'version' =>
+  double(1.6)
+  'model' =>
+  string(3) "PRT"
+  'time' =>
+  string(19) "2013-01-31 23:34:24"
+  'enabled' =>
+  int(1)
+  'keylock' =>
+  int(0)
+  'holiday' =>
+  string(19) "2013-01-31 23:34:00"
+  'holiday_enabled' =>
+  int(0)
+  'units' =>
+  string(1) "C"
+  'switchdiff' =>
+  int(1)
+  'caloffset' =>
+  int(0)
+  'outputdelay' =>
+  int(0)
+  'locklimit' =>
+  int(0)
+  'sensor' =>
+  string(8) "internal"
+  'optimumstart' =>
+  int(0)
+  'runmode' =>
+  string(7) "heating"
+  'frostprotect_enabled' =>
+  int(1)
+  'frostprotect_target' =>
+  int(12)
+  'remote_temperature' =>
+  NULL
+  'floor_temperature' =>
+  NULL
+  'internal_temperature' =>
+  double(15.7)
+  'heating_on' =>
+  int(0)
+  'heating_target' =>
+  int(14)
+  'heating_hold' =>
+  int(0)
+  'rateofchange' =>
+  int(20)
+  'errorcode' =>
+  NULL
+  'progmode' =>
+  string(3) "5/2"
+  'heat_data' =>
+  array(2) {
+    '1-5' =>
+    array(4) {
+      [0] =>
+      array(2) {
+        'time' =>
+        string(8) "04:00:00"
+        'target' =>
+        int(19)
+      }
+      [1] =>
+      array(2) {
+        'time' =>
+        string(8) "08:30:00"
+        'target' =>
+        int(14)
+      }
+      [2] =>
+      array(2) {
+        'time' =>
+        string(8) "16:30:00"
+        'target' =>
+        int(18)
+      }
+      [3] =>
+      array(2) {
+        'time' =>
+        string(8) "22:00:00"
+        'target' =>
+        int(14)
+      }
+    }
+    '6-7' =>
+    array(4) {
+      [0] =>
+      array(2) {
+        'time' =>
+        string(8) "08:00:00"
+        'target' =>
+        int(19)
+      }
+      [1] =>
+      array(2) {
+        'time' =>
+        string(8) "13:00:00"
+        'target' =>
+        int(14)
+      }
+      [2] =>
+      NULL
+      [3] =>
+      array(2) {
+        'time' =>
+        string(8) "22:00:00"
+        'target' =>
+        int(14)
+      }
+    }
+  }
 }
 ```
 

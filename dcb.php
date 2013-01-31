@@ -209,7 +209,7 @@ class DCB implements \ArrayAccess {
 						$out[17] = [(int)$value];
 					break;
 				case 'floorlimit_floormax':
-					if (substr($model, -2) == '-E')
+					if (substr($this['model'], -2) == '-E')
 						$out[19] = [(int)$value];
 					break;
 				case 'heating_target':
@@ -226,13 +226,55 @@ class DCB implements \ArrayAccess {
 						$out[42] = [($value ? 2 : 1)];
 					break;
 				case 'heat_data':
-					if (preg_match('/^PRT/', $model)) {
-						
+					if (preg_match('/^PRT/', $this['model'])) {
+						$i = 0;
+
+						foreach ($value as $day) {
+							$heat_data = array();
+
+							foreach ($day as $entry) {
+								// Disabled entry
+								if ( ! $entry) {
+									$heat_data = array_merge($heat_data, [24, 0, 16]);
+								}
+								else {
+									$heat_data = array_merge(
+												$heat_data,
+												$this->from_sql_time($entry['time'], false),
+												[$entry['target']]
+											);
+								}
+							}
+
+							$index = (count($value) == 2 ? 47 : 103) + $i++ * 12;
+							$out[$index] = $heat_data;
+						}
 					}
 					break;
 				case 'water_data':
-					if ($model == 'PRTHW' || $model == 'TM1') {
+					if ($this['model'] == 'PRTHW' || $this['model'] == 'TM1') {
+						$i = 0;
 
+						foreach ($value as $day) {
+							$water_data = array();
+
+							foreach ($day as $entry) {
+								// Disabled entry
+								if ( ! $entry) {
+									$water_data = array_merge($water_data, [24, 0, 24, 0]);
+								}
+								else {
+									$water_data = array_merge(
+												$water_data,
+												$this->from_sql_time($entry['on'], false),
+												$this->from_sql_time($entry['off'], false)
+											);
+								}
+							}
+
+							$index = (count($value) == 2 ? 71 : 187) + $i++ * 16;
+							$out[$index] = $water_data;
+						}
 					}
 					break;
 				default:
@@ -240,6 +282,8 @@ class DCB implements \ArrayAccess {
 					break;
 			}
 		}
+
+		return $out;
 	}
 
 	protected function sql_datetime($data) {
@@ -307,8 +351,20 @@ class DCB implements \ArrayAccess {
 	}
 
 	public function set_heat_data(array $val) {
+		// Validate number
 		if (count($val) != ($this['progmode'] == '5/2' ? 2 : 7))
 			throw new InvalidDataException("Invalid quantity of data provided given a programming mode of {$this['progmode']}");
+
+		// Validate structure
+		foreach ($val as $day) {
+			if (!is_array($day))
+				throw new InvalidDataException("Invalid structure of heat data days");
+
+			foreach ($day as $entry) {
+				if ($entry && (!isset($entry['time']) || !isset($entry['target'])))
+					throw new InvalidDataException("Invalid structure of heat data entries");
+			}
+		}
 
 		$this->set_attr('heat_data', $val);
 	}
