@@ -225,6 +225,16 @@ class DCB implements \ArrayAccess {
 					if (preg_match('/(HW|TM1)$/', $this['model']))
 						$out[42] = [($value ? 2 : 1)];
 					break;
+				case 'heat_data':
+					if (preg_match('/^PRT/', $model)) {
+
+					}
+					break;
+				case 'water_data':
+					if ($model == 'PRTHW' || $model == 'TM1') {
+
+					}
+					break;
 				default:
 					$failed[] = $key;
 					break;
