@@ -17,9 +17,9 @@ Usage example
 require_once 'heatmiser-wifi.php';
 
 try {
-        // ip, pin, optional port
-        $hm = new Heatmiser_Wifi('192.168.1.123', 1234);
-        $dcb = $hm->get_dcb();
+	// ip, pin, optional port
+	$hm = new Heatmiser_Wifi('192.168.1.123', 1234);
+	$dcb = $hm->get_dcb();
 
 	var_dump($dcb); // Dump existing DCB
 
@@ -32,10 +32,10 @@ try {
 	var_dump($hm->put_dcb($dcb));
 }
 catch (ConnectionFailedException $e) {
-        die("Failed to connect: ".$e->getMessage()."\n");
+	die("Failed to connect: ".$e->getMessage()."\n");
 }
 catch (\Exception $e) {
-        die("Exception of type ".get_class($e)." thrown. Error was: {$e->getMessage()}\n");
+	die("Exception of type ".get_class($e)." thrown. Error was: {$e->getMessage()}\n");
 }
 ```
 
