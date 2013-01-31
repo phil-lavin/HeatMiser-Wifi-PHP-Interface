@@ -227,7 +227,7 @@ class DCB implements \ArrayAccess {
 					break;
 				case 'heat_data':
 					if (preg_match('/^PRT/', $model)) {
-
+						
 					}
 					break;
 				case 'water_data':
@@ -304,6 +304,20 @@ class DCB implements \ArrayAccess {
 	public function set_holiday($val) {
 		$this->set_attr('holiday', $val);
 		$this->set_attr('holiday_enabled', 1);
+	}
+
+	public function set_heat_data(array $val) {
+		if (count($val) != ($this['progmode'] == '5/2' ? 2 : 7))
+			throw new InvalidDataException("Invalid quantity of data provided given a programming mode of {$this['progmode']}");
+
+		$this->set_attr('heat_data', $val);
+	}
+
+	public function set_water_data(array $val) {
+		if (count($val) != ($this['progmode'] == '5/2' ? 2 : 7))
+			throw new InvalidDataException("Invalid quantity of data provided given a programming mode of {$this['progmode']}");
+
+		$this->set_attr('water_data', $val);
 	}
 
 	// ArrayAccess
