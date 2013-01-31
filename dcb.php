@@ -370,8 +370,20 @@ class DCB implements \ArrayAccess {
 	}
 
 	public function set_water_data(array $val) {
+		// Validate number
 		if (count($val) != ($this['progmode'] == '5/2' ? 2 : 7))
 			throw new InvalidDataException("Invalid quantity of data provided given a programming mode of {$this['progmode']}");
+
+		// Validate structure
+		foreach ($val as $day) {
+			if (!is_array($day))
+				throw new InvalidDataException("Invalid structure of hot water data days");
+
+			foreach ($day as $entry) {
+				if ($entry && (!isset($entry['on']) || !isset($entry['off'])))
+					throw new InvalidDataException("Invalid structure of hot water data entries");
+			}
+		}
 
 		$this->set_attr('water_data', $val);
 	}
