@@ -27,7 +27,7 @@ Or if you want to use the latest commit rather than a (supposedly) stable releas
 }
 ```
 
-For Composer, the libraries classes will autoload if you use Composer's autoloader.
+For Composer, the library's classes will autoload if you use Composer's autoloader.
 
 
 Usage example
