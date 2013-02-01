@@ -11,6 +11,8 @@
 *     http://www.heatmiser.com/web/index.php/support/manuals-and-documents/finish/27-network-protocol/25-v3-9-protocol-document
 */
 
+namespace PhilLavin\HeatMiser;
+
 class DCB implements \ArrayAccess {
 	protected $raw;
 	protected $data = array();
@@ -59,7 +61,7 @@ class DCB implements \ArrayAccess {
 		if ($model != 'TM1') {
 			$this->set_units($dcb[5] ? 'F' : 'C');
 			$this->set_switchdiff($dcb[6] / 2);
-			$this->set_caloffset(\Bin::b2w(array_slice($dcb, 8, 2)));
+			$this->set_caloffset(Bin::b2w(array_slice($dcb, 8, 2)));
 			$this->set_outputdelay($dcb[10]);
 			$this->set_locklimit($dcb[12]);
 			$this->set_sensor($lookup($dcb[13], [
@@ -78,7 +80,7 @@ class DCB implements \ArrayAccess {
 			}
 
 			$temp = function($t) {
-				$t = \Bin::b2w($t);
+				$t = Bin::b2w($t);
 
 				return $t == 0xffff ? null : $t / 10;
 			};
@@ -89,7 +91,7 @@ class DCB implements \ArrayAccess {
 
 			$this->set_heating_on($dcb[40]);
 			$this->set_heating_target($dcb[18]);
-			$this->set_heating_hold(\Bin::b2w([$dcb[31], $dcb[32]]));
+			$this->set_heating_hold(Bin::b2w([$dcb[31], $dcb[32]]));
 
 			$this->set_rateofchange($dcb[15]); // Mins per unit change
 			$this->set_errorcode($lookup($dcb[39],
@@ -173,7 +175,7 @@ class DCB implements \ArrayAccess {
 			$this->commit();
 
 			if ($prog)
-				\Error::write("DCB is longer than expected. There's ".count($prog)." octets left");
+				Error::write("DCB is longer than expected. There's ".count($prog)." octets left");
 		}
 	}
 

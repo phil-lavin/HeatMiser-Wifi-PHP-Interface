@@ -11,6 +11,8 @@
 *     http://www.heatmiser.com/web/index.php/support/manuals-and-documents/finish/27-network-protocol/25-v3-9-protocol-document
 */
 
+namespace PhilLavin\HeatMiser;
+
 class Bin {
 	// Convert a 16-bit word to octets in little endian format
 	public static function w2b($word) {

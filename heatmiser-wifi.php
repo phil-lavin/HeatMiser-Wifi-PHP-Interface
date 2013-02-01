@@ -11,6 +11,7 @@
 *     http://www.heatmiser.com/web/index.php/support/manuals-and-documents/finish/27-network-protocol/25-v3-9-protocol-document
 */
 
+namespace PhilLavin\HeatMiser;
 
 // Register error handler
 require_once 'error.php';
@@ -61,7 +62,7 @@ class Heatmiser_Wifi {
 	// Low level command input
 	// data should come as an array of octets or a string
 	protected function command($op, $data) {
-		!is_array($data) and $data = \Bin::zero_unpack('C*', $response);
+		!is_array($data) and $data = Bin::zero_unpack('C*', $response);
 
 		$len = 7 + count($data);
 		$cmd = array_merge([$op], Bin::w2b($len), Bin::w2b($this->pin), $data);
@@ -81,13 +82,13 @@ class Heatmiser_Wifi {
 		}
 
 		// Split the response into octets
-		$response = \Bin::zero_unpack('C*', $response);
+		$response = Bin::zero_unpack('C*', $response);
 
 		// Extract interesting fields
 		$op = $response[0];
-		$len = \Bin::b2w($response[1], $response[2]);
+		$len = Bin::b2w($response[1], $response[2]);
 		$data = array_slice($response, 3, -2);
-		$crc = \Bin::b2w(array_slice($response, -2));
+		$crc = Bin::b2w(array_slice($response, -2));
 
 		// Check len
 		if ($len != count($response)) {
@@ -115,12 +116,12 @@ class Heatmiser_Wifi {
 		}
 
 		// Check start
-		if (\Bin::b2w($data[0], $data[1]) != 0x0000) {
+		if (Bin::b2w($data[0], $data[1]) != 0x0000) {
 			throw new InvalidDCBResponseException("Start is incorrect in response");
 		}
 
 		// Check len - no len suggest incorrect pin
-		if ( ! ($length = \Bin::b2w($data[2], $data[3]))) {
+		if ( ! ($length = Bin::b2w($data[2], $data[3]))) {
 			throw new InvalidPinException("Thermostat returned a 0 length response. This suggests the pin is wrong");
 		}
 
@@ -130,7 +131,7 @@ class Heatmiser_Wifi {
 		}
 
 		// Check other len
-		if (\Bin::b2w($data[4], $data[5]) != count($data) - 4) {
+		if (Bin::b2w($data[4], $data[5]) != count($data) - 4) {
 			throw new InvalidDCBResponseException("Response length 2 is not correct");
 		}
 
@@ -158,7 +159,7 @@ class Heatmiser_Wifi {
 	// Only supports writing 1 item - largely because there's some stuff you can't write together, so the docs say
 	public function write_dcb($item, array $data) {
 		// Send. 1 is the number of items
-		$data = array_merge([1], \Bin::w2b($item), [count($data)], $data);
+		$data = array_merge([1], Bin::w2b($item), [count($data)], $data);
 		$this->command(0xa3, $data);
 
 		// Get

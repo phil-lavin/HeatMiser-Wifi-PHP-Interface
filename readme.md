@@ -18,7 +18,7 @@ require_once 'heatmiser-wifi.php';
 
 try {
 	// ip, pin, optional port
-	$hm = new Heatmiser_Wifi('192.168.1.123', 1234);
+	$hm = new \PhilLavin\HeatMiser\Heatmiser_Wifi('192.168.1.123', 1234);
 	$dcb = $hm->get_dcb();
 
 	var_dump($dcb); // Dump existing DCB

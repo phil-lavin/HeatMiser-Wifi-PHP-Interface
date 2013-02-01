@@ -11,11 +11,13 @@
 *     http://www.heatmiser.com/web/index.php/support/manuals-and-documents/finish/27-network-protocol/25-v3-9-protocol-document
 */
 
+namespace PhilLavin\HeatMiser;
+
 class Error {
 	protected static $enabled = true;
 
 	public static function register() {
-		set_error_handler(array('Error', 'error_handler'));
+		set_error_handler(array('\PhilLavin\Heatmiser\Error', 'error_handler'));
 	}
 
 	public static function error_handler($errno, $errstr, $errfile, $errline) {
