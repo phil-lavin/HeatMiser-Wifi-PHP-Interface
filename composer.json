@@ -1,5 +1,5 @@
 {
-	"name": "phil-lavin/HeatMiser-Wifi-PHP-Interface",
+	"name": "phil-lavin/heat-miser-wifi-php-interface",
 	"description": "PHP class to interface with HeatMiser wifi thermostats via their binary interface. Allows reading/writing of DCB.",
 	"keywords": ["heatmiser", "thermostat", "binary programmer", "home automation"],
 	"homepage": "https://github.com/phil-lavin/HeatMiser-Wifi-PHP-Interface",
