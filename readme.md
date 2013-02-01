@@ -8,13 +8,31 @@ PHP library to interface with HeatMiser wifi thermostats via their binary interf
 
 
 
+Installation
+------------
+
+Supports both Composer installation and regular file inclusion. For Composer, add the following to your composer.json:
+
+```Javascript
+"require": {
+    "phil-lavin/heat-miser-wifi-php-interface": "dev-master"
+}
+```
+
+For Composer, the libraries classes will autoload if you use Composer's autoloader.
+
+
 Usage example
 -------------
 
 ```php
 <?php
 
-require_once 'heatmiser-wifi.php';
+// If you installed the library with Composer
+//require_once 'vendor/autoload.php';
+
+// If you didn't install the library with Composer
+require_once 'src/PhilLavin/HeatMiser/Heatmiser_Wifi.php';
 
 try {
 	// ip, pin, optional port

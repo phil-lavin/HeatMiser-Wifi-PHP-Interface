@@ -14,14 +14,14 @@
 namespace PhilLavin\HeatMiser;
 
 // Register error handler
-require_once 'error.php';
+require_once 'Error.php';
 Error::register();
 
 // Binary functions
-require_once 'bin.php';
+require_once 'Bin.php';
 
 // DCB
-require_once 'dcb.php';
+require_once 'DCB.php';
 
 // Main class
 class Heatmiser_Wifi {
