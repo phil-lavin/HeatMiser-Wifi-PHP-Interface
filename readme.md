@@ -57,7 +57,7 @@ try {
 	// Write and dump new DCB
 	var_dump($hm->put_dcb($dcb));
 }
-catch (ConnectionFailedException $e) {
+catch (\PhilLavin\HeatMiser\ConnectionFailedException $e) {
 	die("Failed to connect: ".$e->getMessage()."\n");
 }
 catch (\Exception $e) {
