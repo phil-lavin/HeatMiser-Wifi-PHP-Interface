@@ -32,11 +32,11 @@ Usage example
 //require_once 'vendor/autoload.php';
 
 // If you didn't install the library with Composer
-require_once 'src/PhilLavin/HeatMiser/Heatmiser_Wifi.php';
+require_once 'src/PhilLavin/HeatMiser/Wifi.php';
 
 try {
 	// ip, pin, optional port
-	$hm = new \PhilLavin\HeatMiser\Heatmiser_Wifi('192.168.1.123', 1234);
+	$hm = new \PhilLavin\HeatMiser\Wifi('192.168.1.123', 1234);
 	$dcb = $hm->get_dcb();
 
 	var_dump($dcb); // Dump existing DCB

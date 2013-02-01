@@ -24,7 +24,7 @@ require_once 'Bin.php';
 require_once 'DCB.php';
 
 // Main class
-class Heatmiser_Wifi {
+class Wifi {
 	protected $ip;
 	protected $port;
 	protected $pin;
