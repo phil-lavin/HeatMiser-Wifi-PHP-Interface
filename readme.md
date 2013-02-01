@@ -15,6 +15,14 @@ Supports both Composer installation and regular file inclusion. For Composer, ad
 
 ```Javascript
 "require": {
+    "phil-lavin/heat-miser-wifi-php-interface": "1.0.0"
+}
+```
+
+Or if you want to use the latest commit rather than a (supposedly) stable release:
+
+```Javascript
+"require": {
     "phil-lavin/heat-miser-wifi-php-interface": "dev-master"
 }
 ```
