@@ -209,6 +209,12 @@ array(28) {
 }
 ```
 
+Known Issues
+------------
+
+* The DCB object returned by put_dcb() always has heating_on set to 0. This seems to be a bug with the thermostat and not really something
+we can work around. Re-read the DCB following a write if you need to reliably get this value.
+
 
 Requirements
 ------------
