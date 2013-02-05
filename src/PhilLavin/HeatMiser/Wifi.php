@@ -179,6 +179,10 @@ class Wifi {
 			$raw = $this->write_dcb($key, $value);
 		}
 
+		// Return the original DCB if no changes were made
+		if (!isset($raw))
+			return $dcb;
+
 		return new DCB($raw);
 	}
 
