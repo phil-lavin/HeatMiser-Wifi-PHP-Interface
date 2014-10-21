@@ -201,6 +201,7 @@ class DCB implements \ArrayAccess {
 					break;
 				case 'holiday':
 					$out[24] = $this->from_sql_datetime($value, false);
+					unset($out[24][5]); // We don't want seconds
 					break;
 				case 'runmode':
 					if ($this['model'] != 'TM1')
