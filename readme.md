@@ -15,7 +15,7 @@ Supports both Composer installation and regular file inclusion. For Composer, ad
 
 ```Javascript
 "require": {
-    "phil-lavin/heat-miser-wifi-php-interface": "1.0.0"
+    "phil-lavin/heat-miser-wifi-php-interface": "1.0.1"
 }
 ```
 
