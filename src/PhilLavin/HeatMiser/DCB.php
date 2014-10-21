@@ -220,7 +220,7 @@ class DCB implements \ArrayAccess {
 					break;
 				case 'heating_hold':
 					if ($this['model'] != 'TM1')
-						$out[32] = [(int)$value];
+						$out[32] = Bin::w2b($value);
 					break;
 				case 'hotwater_on':
 					// Hotwater models
