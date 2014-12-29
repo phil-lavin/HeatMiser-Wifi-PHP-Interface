@@ -216,12 +216,18 @@ Known Issues
 we can work around. Re-read the DCB following a write if you need to reliably get this value.
 
 
+Uses
+----
+
+@fogma has written a PHP frontend to the Heatmiser thermostats to provide enhanced security over the 4 digit pin code that protects the thermostat natively.
+This code can be found here: http://www.fogma.co.uk/foggylog/archive/382.html
+
+
 Requirements
 ------------
 
 * PHP >= 5.4
 * A HeatMiser WiFi Thermostat. Tested on a PRT-TS thermostat. Will possibly work on others or indeed act as a base for your own development.
-
 
 
 License
